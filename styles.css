@@ -1,3 +1,6 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans&display=swap');
+
 :root {
     --clr-primary: rgb(54, 112, 199);
     --clr-light: #f4f4f4;
@@ -64,11 +67,18 @@ form {
 .btn.create {
     font-size: 1.5rem;
     font-weight: 900;
-    margin-right: .0.25em;
+    margin-right: 0.25em;
     transition: opacity 250ms ease-in;
 }
 .btn.create:hover {
     opacity: 0.7;
+}
+.btn.delete {
+    font-size: 1rem;
+    opacity: 0.7;
+}
+.btn.delete:hover {
+    color: var(--clr-warning);
 }
 .new {
     background: transparent;
@@ -81,13 +91,14 @@ form {
     transition: border-bottom 100ms ease-in;
     order: 2;
 }
-
+.new.list::placeholder {
+    color: var(--clr-light);
+}
 .new:focus {
     border-bottom-width: 3px;
 }
 .new:focus::placeholder {
-    opacity: 0.2;
-    
+    opacity: 0.2;   
 }
 .new.list {
     font-size: 1.1rem;
@@ -96,10 +107,8 @@ form {
     margin-bottom: 0;;
 }
 .active-list {
-font-weight: 700;
+    font-weight: 700;
 }
-
-
 .todo-list {
     --spacer: 2em;
 
@@ -114,7 +123,7 @@ font-weight: 700;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    }
+}
 .list-title {
     margin: 0 1rem 0 0 ;
 }
@@ -201,9 +210,4 @@ font-weight: 700;
     left: 0;
     bottom: -35px;
     color: var(--clr-light);
-}
-.btn-delete {
-    font-size: 1rem;
-    opacity: 0.7;
-
 }
