@@ -1,102 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Todo List</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta charset="utf-8">
+    <title>Rock Paper Scissors</title>
 </head>
 
 <body>
-    <h1 class="title">Stuff I need to do </h1>
+    <header>
+        <h1>Rock Paper Scissors</h1>
+        <link rel="stylesheet" href="styles.css">
+    </header>
 
-    <div class="all-tasks">
-        <h2 class="task-list-title">My Lists</h2>
-        <ul class="task-list" data-lists>
-           <!-- <li class="active-list list-name"></li> 
-               <li class="list-name">Cleaning</li>
-            <li class="list-name">Work</li> -->
-        </ul>
-
-        <form action="" data-new-list-form>
-            <input 
-            type="text" 
-            class="new list" 
-            data-new-list-input
-            placeholder="new list name" 
-            aria-label="create new list" 
-            />
-            <button class="btn create"
-            aria-label="create new list">+</button>
-        </form>
+    <div class="score-board">
+        <div id="player-label" class="badge">Player</div>
+        <div id="computer-label" class="badge">Comp</div>
+        <span id="player-score">0</span> : <span id="computer-score">0</span>
     </div>
 
-    <div class="todo-list ">
-        <div class="todo-header">
-            <h2 class="list-title">Placeholder</h2>
-            <div class="task-count">3 tasks remaining
+    <div class="result">
+        <p>Let's Play!</p>
+    </div>
 
-            </div>
+    <div class="choices">
+        <div class="choice" id="r">
+            <img src="images/Rock.png" style="width:75px;height:75px;">
         </div>
-            <div class="todo-body">
-                <div class="tasks">
-                    <div class="task">
-                        <input 
-                        type="checkbox"
-                        id="task-1" 
-                        />
-                        <label for="task-1">
-                            <span class="custom-checkbox"></span>
-                            drink a beer
-                        </label>
-                    </div>
-                    <!-- /task-1 -->
-
-                    <div class="task">
-                        <input 
-                        type="checkbox"
-                        id="task-2" 
-                        />
-                        <label for="task-2">
-                            <span class="custom-checkbox"></span>
-                            take a shot
-                        </label>
-                    </div>
-                        <!-- /task-2 --> 
-                            
-                    <div class="task">
-                        <input 
-                        type="checkbox"
-                        id="task-3" 
-                        />
-                        <label for="task-3">
-                            <span class="custom-checkbox"></span>
-                            liquor drink
-                        </label>
-                    </div>
-                        <!-- /task-3 -->
-
-                 </div>
-            <div class="new-task-creator">
-                <form action="">
-                    <input 
-                    type="text" 
-                    class="new task" 
-                    placeholder="new task name" 
-                    aria-label="new task name" 
-                    />
-                    <button class="btn create"
-                    aria-label="create new task">+</button>
-                </form>
-            </div>
-            <div class="delete-stuff">
-                <button class="btn delete">Clear Completed Tasks</button>
-                <button class="btn delete">Delete list</button>
-            </div>
+        <div class="choice" id="p">
+            <img src="images/Paper.png" style="width:75px;height:75px;">
+        </div>
+        <div class="choice" id="s">
+            <img src="images/Scissors.png" style="width:75px;height:75px;">
         </div>
     </div>
-    <script defer src="app.js"></script>
+
+    <p id="action-message">Make your move.</p>
+    <script src="app.js" charset="utf-8"></script>
 </body>
 
 </html>
