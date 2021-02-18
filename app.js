@@ -1,87 +1,107 @@
-// Caching the DOM
+const listsContainer = document.querySelector('[data-lists]')
+const newListForm = document.querySelector('[data-new-list-form]')
+const newListInput = document.querySelector('[data-new-list-input]')
+const deleteListButton = document.querySelector('[data-delete-list-button]')
+const listDisplayContainer = document.querySelector('[data-list-display-container]')
+const listTitleElement = document.querySelector('[data-list-title]')
+const listCountElement = document.querySelector('[data-list-count]')
+const tasksContainer = document.querySelector('[data-tasks]')
+const taskTemplate = document.getElementById('task-template')
 
-let playerScore = 0;
-let compScore = 0;
-const playerScore_span = document.getElementById("player-score");
-const compScore_span = document.getElementById("computer-score");
-const scoreBoartd_div = document.querySelector(".score-board");
-const result_p = document.querySelector(".result > p");
-const rock_div = document.getElementById("r");
-const paper_div = document.getElementById("p");
-const scissors_div = document.getElementById("s");
+const LOCAL_STORAGE_LIST_KEY = 'task.lists'
+const LOCAL_STORAGE_SELECTED_LIST_ID_KEY = 'task.selectedListId'
+let lists = JSON.parse(localStorage.getItem(LOCAL_STORAGE_LIST_KEY)) || []
+let selectedListId = localStorage.getItem(LOCAL_STORAGE_SELECTED_LIST_ID_KEY)
 
-//=====================================================================
+listsContainer.addEventListener('click', e => {
+    if (e.target.tagName.toLowerCase() === 'li') {
+        selectedListId = e.target.dataset.listId
+        saveAndRender() 
+    }
+})
 
-function getComputerChoice() {
-    const choices = ['r', 'p', 's'];
-    const randomNumber = Math.floor(Math.random() * 3);
-    return choices[randomNumber];
+deleteListButton.addEventListener('click', e => {
+    lists = lists.filter(list => list.id !== selectedListId)
+    selectedListId = null
+    saveAndRender()
+})
+
+newListForm.addEventListener('submit', e => {
+    e.preventDefault()
+    const listName = newListInput.value
+    if (listName == null || listName === '') return
+    const list = createList(listName)
+    newListInput.value = null
+    lists.push(list)
+    saveAndRender()
+})
+
+function createList(name) {
+   return { id: Date.now().toString(), name: name, tasks: [] }
 }
 
-function convertToWord(letter) {
-    if (letter === "r") return "Rock";
-    if (letter === "p") return "Paper";
-    return "Scissors";
+function saveAndRender() {
+    save()
+    render()
 }
 
-function win(playerChoice, computerChoice) {
-    playerScore++;
-    playerScore_span.innerHTML = playerScore;
-    compScore_span.innerHTML = compScore;
-    const smallPlayerWord = "You".fontsize(3).sup();
-    const smallCompWord = "Comp".fontsize(3).sup();
-    result_p.innerHTML = `${convertToWord(playerChoice)}${smallPlayerWord} Beats ${convertToWord(computerChoice)}${smallCompWord}. You Win!!`;
-    document.getElementById(playerChoice).classList.add('green-glow');
-    setTimeout(() => document.getElementById(playerChoice).classList.remove('green-glow'), 500);
+function save() {
+    localStorage.setItem(LOCAL_STORAGE_LIST_KEY, JSON.stringify(lists))
+    localStorage.setItem(LOCAL_STORAGE_SELECTED_LIST_ID_KEY, selectedListId)
 }
 
-function lose(playerChoice, computerChoice) {
-    compScore++;
-    playerScore_span.innerHTML = playerScore;
-    compScore_span.innerHTML = compScore;
-    const smallPlayerWord = "You".fontsize(3).sup();
-    const smallCompWord = "Comp".fontsize(3).sup();
-    result_p.innerHTML = `${convertToWord(playerChoice)}${smallPlayerWord} Loses To ${convertToWord(computerChoice)}${smallCompWord}. Sorry...You Lose`;
-    document.getElementById(playerChoice).classList.add('red-glow');
-    setTimeout(() => document.getElementById(playerChoice).classList.remove('red-glow'), 500);
+function render() {
+    clearElement(listsContainer)
+    renderLists()
+    const selectedList = lists.find(list => list.id === selectedListId)
+
+    if (selectedListId == null) {
+        listDisplayContainer.style.display = 'none'
+    }  else {
+        listDisplayContainer.style.display = ''
+        listTitleElement.innerText = selectedList.name
+        renderTaskCount(selectedList)
+        clearElement(tasksContainer)
+        renderTasks(selectedList)
+    }
+}
+function renderTasks(selectedList) {
+    selectedList.tasks.forEach(task => {
+        const taskElement = document.importNode(taskTemplate.content, true)
+        const checkbox = taskElement.querySelector('input')
+        checkbox.id = task.id
+        checkbox.checked = task.complete
+        const label = taskElement.querySelector('label')
+        label.htmlFor = task.id
+        label.append(task.name)
+        tasksContainer.appendChild(taskElement)
+    })
 }
 
-
-function draw(playerChoice, computerChoice) {
-    const smallPlayerWord = "you".fontsize(3).sup();
-    const smallCompWord = "comp".fontsize(3).sup();
-    result_p.innerHTML = `${convertToWord(playerChoice)}${smallPlayerWord} = ${convertToWord(computerChoice)}${smallCompWord}. It's a DRAW.`;
-    document.getElementById(playerChoice).classList.add('grey-glow');
-    setTimeout(() => document.getElementById(playerChoice).classList.remove('grey-glow'), 500);
+function renderTaskCount(selectedList) {
+    const incompleteTaskCount = selectedList.tasks.filter(task => 
+    !task.complete).length
+    const taskString = incompleteTaskCount === 1 ? "task" : "tasks"   
+    listCountElement.innerText = `${incompleteTaskCount} ${taskString} 
+    remaining`
 }
 
-function game(playerChoice) {
-    const computerChoice = getComputerChoice();
-    switch (playerChoice + computerChoice) {
-        case "rs":
-        case "pr":
-        case "sp":
-            win(playerChoice, computerChoice);
-            break;
-        case "rp":
-        case "ps":
-        case "sr":
-            lose(playerChoice, computerChoice);
-            break;
-        case "rr":
-        case "pp":
-        case "ss":
-            draw(playerChoice, computerChoice);
-            break;
-
+function renderLists() {
+    lists.forEach(list => {
+        const listElement = document.createElement('li')
+        listElement.dataset.listId = list.id
+        listElement.classList.add("list-name")
+        listElement.innerText = list.name
+        if (list.id === selectedListId) { 
+            listElement.classList.add('active-list')
+        }
+        listsContainer.appendChild(listElement)
+    })
+}
+function clearElement(element) {
+    while (element.firstChild){
+        element.removeChild(element.firstChild)
     }
 
 }
-
-function main() {
-    rock_div.addEventListener('click', () => game("r"));
-    paper_div.addEventListener('click', () => game("p"));
-    scissors_div.addEventListener('click', () => game("s"));
-};
-
-main();
+render()
