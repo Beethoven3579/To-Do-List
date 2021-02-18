@@ -1,44 +1,87 @@
-const listsContainer = document.querySelector('[data-lists]')
-const newListForm = document.querySelector('[data-new-list-form]')
-const newListInput = document.querySelector('[data-new-list-input]')
+// Caching the DOM
 
-let lists = [{
-    id: 1,
-    name: 'name'
-},
- {
-    id: 2,
-    name: 'todo'
-}]
+let playerScore = 0;
+let compScore = 0;
+const playerScore_span = document.getElementById("player-score");
+const compScore_span = document.getElementById("computer-score");
+const scoreBoartd_div = document.querySelector(".score-board");
+const result_p = document.querySelector(".result > p");
+const rock_div = document.getElementById("r");
+const paper_div = document.getElementById("p");
+const scissors_div = document.getElementById("s");
 
-newListForm.addEventListener('submit', e => {
-    e.preventDefault()
-    const listName = newListInput.value
-    if (listName == null || listName === '') return
-    const list = createList(listName)
-    newListInput.value = null
-    lists.push(list)
-    render()
-})
+//=====================================================================
 
-function createList(name) {
-   return { id: Date.now().toString(), name: name, tasks: []}
+function getComputerChoice() {
+    const choices = ['r', 'p', 's'];
+    const randomNumber = Math.floor(Math.random() * 3);
+    return choices[randomNumber];
 }
 
-function render() {
-    clearElement(listsContainer)
-    lists.forEach(list => {
-        const listElement = document.createElement('li')
-        listElement.dataset.listId = list.id
-        listElement.classList.add("list-name")
-        listElement.innerText = list.name
-        listsContainer.appendChild(listElement)
-    })
+function convertToWord(letter) {
+    if (letter === "r") return "Rock";
+    if (letter === "p") return "Paper";
+    return "Scissors";
 }
-function clearElement(element) {
-    while (element.firstChild){
-        element.removeChild(element.firstChild)
+
+function win(playerChoice, computerChoice) {
+    playerScore++;
+    playerScore_span.innerHTML = playerScore;
+    compScore_span.innerHTML = compScore;
+    const smallPlayerWord = "You".fontsize(3).sup();
+    const smallCompWord = "Comp".fontsize(3).sup();
+    result_p.innerHTML = `${convertToWord(playerChoice)}${smallPlayerWord} Beats ${convertToWord(computerChoice)}${smallCompWord}. You Win!!`;
+    document.getElementById(playerChoice).classList.add('green-glow');
+    setTimeout(() => document.getElementById(playerChoice).classList.remove('green-glow'), 500);
+}
+
+function lose(playerChoice, computerChoice) {
+    compScore++;
+    playerScore_span.innerHTML = playerScore;
+    compScore_span.innerHTML = compScore;
+    const smallPlayerWord = "You".fontsize(3).sup();
+    const smallCompWord = "Comp".fontsize(3).sup();
+    result_p.innerHTML = `${convertToWord(playerChoice)}${smallPlayerWord} Loses To ${convertToWord(computerChoice)}${smallCompWord}. Sorry...You Lose`;
+    document.getElementById(playerChoice).classList.add('red-glow');
+    setTimeout(() => document.getElementById(playerChoice).classList.remove('red-glow'), 500);
+}
+
+
+function draw(playerChoice, computerChoice) {
+    const smallPlayerWord = "you".fontsize(3).sup();
+    const smallCompWord = "comp".fontsize(3).sup();
+    result_p.innerHTML = `${convertToWord(playerChoice)}${smallPlayerWord} = ${convertToWord(computerChoice)}${smallCompWord}. It's a DRAW.`;
+    document.getElementById(playerChoice).classList.add('grey-glow');
+    setTimeout(() => document.getElementById(playerChoice).classList.remove('grey-glow'), 500);
+}
+
+function game(playerChoice) {
+    const computerChoice = getComputerChoice();
+    switch (playerChoice + computerChoice) {
+        case "rs":
+        case "pr":
+        case "sp":
+            win(playerChoice, computerChoice);
+            break;
+        case "rp":
+        case "ps":
+        case "sr":
+            lose(playerChoice, computerChoice);
+            break;
+        case "rr":
+        case "pp":
+        case "ss":
+            draw(playerChoice, computerChoice);
+            break;
+
     }
 
 }
-render()
+
+function main() {
+    rock_div.addEventListener('click', () => game("r"));
+    paper_div.addEventListener('click', () => game("p"));
+    scissors_div.addEventListener('click', () => game("s"));
+};
+
+main();
