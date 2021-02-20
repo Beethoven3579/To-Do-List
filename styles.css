@@ -1,6 +1,6 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Work+Sans&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@700&display=swap');
 :root {
     --clr-primary: rgb(54, 112, 199);
     --clr-light: #f4f4f4;
@@ -101,7 +101,7 @@ form {
     opacity: 0.2;   
 }
 .new.list {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
 }
 .new.task {
     margin-bottom: 0;;
